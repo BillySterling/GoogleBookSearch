@@ -16,9 +16,16 @@ if (process.env.NODE_ENV === "production") {
 app.use(routes);
 
 // Connect to the Mongo DB
-mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/googlebooks");
+// If deployed, use the deployed database. Otherwise use the local mongoHeadlines database
+var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/googlebooks";
+
+mongoose.connect(MONGODB_URI, { useNewUrlParser: true }, function(err) {
+  if (err)
+  console.log(err);
+});
+mongoose.set('useCreateIndex', true);
 
 // Start the API server
 app.listen(PORT, function() {
-  console.log("API Server now listening on PORT ${PORT}!");
+    console.log(`🌎  ==> API Server now listening on PORT ${PORT}!`);
 });
